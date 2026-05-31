@@ -5,12 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map;
 
-// This is our "Frontend" class.
-// It only manages the visual components.
-// It holds an instance of GameLogic to do the "thinking".
 public class GameUI {
 
-    // UI Components 
     private JFrame frame;
     private JTextField guessInput;
     private JButton guessButton;
@@ -18,22 +14,15 @@ public class GameUI {
     private JLabel attemptsLabel;
     private JLabel scoreLabel;
     private JButton newGameButton;
-
-    //The "Backend" Logic
-    private GameLogic game; //This UI class HAS A logic class
+    private GameLogic game; 
 
     public GameUI() {
-        // 1. Create the instanzce of the logic
         this.game = new GameLogic();
-        
-        // 2. Build the UI
+
         createUI();
         
-        // 3. Set the initial text
         updateUIForNewGame();
     }
-
-    // Creates all the visual components
     private void createUI() {
         frame = new JFrame("Number Guessing Game");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -65,7 +54,6 @@ public class GameUI {
         newGameButton.setVisible(false);
         frame.add(newGameButton);
 
-        // --- Add Logic (Action Listeners) ---
         guessButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -83,19 +71,14 @@ public class GameUI {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
-
-    // Asks the logic to start a new game, then updates the UI
     private void startNewGame() {
         game.startNewGame();
         updateUIForNewGame();
     }
-
-    // Helper method to set all labels
     private void updateUIForNewGame() {
         messageLabel.setText("New game started. Guess a number!");
         messageLabel.setForeground(Color.BLACK);
         
-        // Get the starting values from the logic class
         attemptsLabel.setText("You have " + game.getAttemptsLeft() + " attempts left.");
         scoreLabel.setText("Total Score: " + game.getTotalScore());
         
@@ -105,15 +88,11 @@ public class GameUI {
         newGameButton.setVisible(false);
     }
 
-    // This is where the two classes talk!
     private void handleGuess() {
-        // 1. Get text from the UI
         String guessText = guessInput.getText();
         
-        // 2. Send the text to the logic class and get a result
         Map<String, Object> result = game.checkGuess(guessText);
         
-        // 3. Update the UI based on the result
         messageLabel.setText((String) result.get("message"));
         messageLabel.setForeground((Color) result.get("color"));
         
@@ -123,7 +102,7 @@ public class GameUI {
 
         attemptsLabel.setText("You have " + attempts + " attempts left.");
         scoreLabel.setText("Total Score: " + score);
-        guessInput.setText(""); // Clear input
+        guessInput.setText("");
 
         if (gameOver) {
             guessInput.setEnabled(false);
@@ -132,12 +111,10 @@ public class GameUI {
         }
     }
 
-    // Main method to run the application
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                // This now starts the UI, which in turn starts the logic.
                 new GameUI();
             }
         });
